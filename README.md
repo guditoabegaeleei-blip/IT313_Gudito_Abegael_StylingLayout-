@@ -1,60 +1,25 @@
-IT313 React State & Hooks — Lab Timer & Practice Tracker
+# IT313 Course Catalog
 
-Problem
+## Problem Description
 
-This project is a small React Native app for tracking solved practice problems and the time spent during a laboratory session.
+This project is a course catalog screen for IT313 Mobile Programming. It displays five courses using responsive cards.
 
-Approach
+## Component Structure
 
-The app uses useState to manage the solved count and running state.
-A custom useStopwatch hook uses useEffect and setInterval to count the seconds.
+### CourseCard
 
-The cleanup function uses clearInterval to properly stop the timer when it is stopped or unmounted.
+Displays the course code, title, schedule, units, and lecture tag. It uses StyleSheet, Flexbox, and Platform.select.
 
-Conditional rendering is used for the Great job! message and the Running... or Paused status.
+### CourseCatalog
 
-State is lifted to LabScreen so that PracticeTracker and Stopwatch can share the same state.
+Contains the course list using useState and displays the cards inside a ScrollView. It uses useWindowDimensions for responsive sizing.
 
-Main Components
+## How to Run
 
-LabScreen — manages the shared state.
-
-PracticeTracker — displays and updates the solved count.
-
-Stopwatch — displays the elapsed time and status.
-
-useStopwatch — handles the stopwatch logic.
-
-How to Run
-
-Open the project in VS Code.
-
-Open the terminal in the project folder.
-
-Run:
+1. Open the project folder.
+2. Open the terminal.
+3. Run the command:
 
 npx expo start
 
-Open Expo Go on a mobile device.
-
-Scan the QR code.
-
-Test the Solve +1, Reset, Start, and Stop buttons.
-
-Requirements Demonstrated
-
-useState
-
-useEffect
-
-Effect dependency array
-
-Cleanup with clearInterval
-
-Conditional rendering
-
-Event handling
-
-Lifting state up
-
-Custom hooks
+4. Scan the QR code using Expo Go.

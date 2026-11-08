@@ -1,296 +1,127 @@
-import { useState } from "react";
 import {
-  Image,
-  Pressable,
   SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   View,
+  useWindowDimensions,
 } from "react-native";
 
-type Student = {
+import { useState } from "react";
+import CourseCard from "../components/CourseCard";
+
+type Course = {
   id: string;
-  name: string;
-  year: string;
-  photoUrl: string;
-  flagged: boolean;
+  code: string;
+  title: string;
+  units: number;
+  schedule: string;
 };
 
-type StudentCardProps = {
-  id: string;
-  name: string;
-  year: string;
-  photoUrl: string;
-  flagged: boolean;
-  onToggleFlag: (id: string) => void;
-};
-
-const initialStudents: Student[] = [
+const initialCourses: Course[] = [
   {
-    id: "s1",
-    name: "Ana Cruz",
-    year: "3rd Year",
-    photoUrl: "https://i.pravatar.cc/100?img=1",
-    flagged: false,
+    id: "c1",
+    code: "IT313",
+    title: "Mobile Programming",
+    units: 3,
+    schedule: "MWF 8:00–9:00 AM",
   },
   {
-    id: "s2",
-    name: "Bea Santos",
-    year: "2nd Year",
-    photoUrl: "https://i.pravatar.cc/100?img=2",
-    flagged: false,
+    id: "c2",
+    code: "IT311",
+    title: "Systems Integration",
+    units: 3,
+    schedule: "TTh 9:30–11:00 AM",
   },
   {
-    id: "s3",
-    name: "Cid Ramos",
-    year: "4th Year",
-    photoUrl: "https://i.pravatar.cc/100?img=3",
-    flagged: false,
+    id: "c3",
+    code: "IT321",
+    title: "Information Assurance",
+    units: 3,
+    schedule: "MWF 1:00–2:00 PM",
   },
   {
-    id: "s4",
-    name: "Dex Alonzo",
-    year: "1st Year",
-    photoUrl: "https://i.pravatar.cc/100?img=4",
-    flagged: false,
+    id: "c4",
+    code: "IT331",
+    title: "Web Systems & Technologies",
+    units: 3,
+    schedule: "TTh 1:00–2:30 PM",
   },
   {
-    id: "s5",
-    name: "Eli Tan",
-    year: "3rd Year",
-    photoUrl: "https://i.pravatar.cc/100?img=5",
-    flagged: false,
+    id: "c5",
+    code: "IT341",
+    title: "Human-Computer Interaction",
+    units: 3,
+    schedule: "MWF 3:00–4:00 PM",
   },
 ];
 
-function StudentCard({
-  id,
-  name,
-  year,
-  photoUrl,
-  flagged,
-  onToggleFlag,
-}: StudentCardProps) {
-  return (
-    <View style={styles.card}>
-      <Image source={{ uri: photoUrl }} style={styles.photo} />
+export default function CourseCatalog() {
+  const { width } = useWindowDimensions();
 
-      <View style={styles.studentInfo}>
-        <Text style={styles.studentName}>{name}</Text>
-        <Text style={styles.studentYear}>{year}</Text>
-      </View>
+  const [courses] = useState<Course[]>(initialCourses);
 
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={`${
-          flagged ? "Remove flag for" : "Flag for advising"
-        } ${name}`}
-        onPress={() => onToggleFlag(id)}
-        style={({ pressed }) => [
-          styles.flagButton,
-          flagged && styles.flaggedButton,
-          pressed && styles.buttonPressed,
-        ]}
-      >
-        <Text style={[styles.flagText, flagged && styles.flaggedText]}>
-          {flagged ? "★ Flagged" : "☆ Flag"}
-        </Text>
-      </Pressable>
-    </View>
-  );
-}
-
-export default function StudentDirectory() {
-  const [students, setStudents] = useState<Student[]>(initialStudents);
-  const [query, setQuery] = useState("");
-
-  const toggleFlag = (id: string) => {
-    setStudents((currentStudents) =>
-      currentStudents.map((student) =>
-        student.id === id ? { ...student, flagged: !student.flagged } : student,
-      ),
-    );
-  };
-
-  const filteredStudents = students.filter((student) =>
-    student.name.toLowerCase().includes(query.trim().toLowerCase()),
-  );
+  const cardWidth = width * 0.92;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor="#201B50" />
-
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Student Directory</Text>
-        <Text style={styles.headerSubtitle}>
-          {students.length} students this term
-        </Text>
+        <Text style={styles.headerTitle}>IT313 Course Catalog</Text>
+
+        <Text style={styles.headerSubtitle}>5 courses this semester</Text>
       </View>
 
-      <View style={styles.container}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="⌕  Search students..."
-          placeholderTextColor="#8B89A8"
-          value={query}
-          onChangeText={setQuery}
-          autoCapitalize="none"
-          autoCorrect={false}
-          clearButtonMode="while-editing"
-          accessibilityLabel="Search students"
-        />
-
-        <ScrollView
-          style={styles.list}
-          contentContainerStyle={styles.listContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          {filteredStudents.length > 0 ? (
-            filteredStudents.map((student) => (
-              <StudentCard
-                key={student.id}
-                id={student.id}
-                name={student.name}
-                year={student.year}
-                photoUrl={student.photoUrl}
-                flagged={student.flagged}
-                onToggleFlag={toggleFlag}
-              />
-            ))
-          ) : (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyTitle}>No students found</Text>
-              <Text style={styles.emptySubtitle}>
-                Try searching another name.
-              </Text>
-            </View>
-          )}
-        </ScrollView>
-      </View>
+      <ScrollView
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
+      >
+        {courses.map((course) => (
+          <CourseCard
+            key={course.id}
+            id={course.id}
+            code={course.code}
+            title={course.title}
+            units={course.units}
+            schedule={course.schedule}
+            width={cardWidth}
+          />
+        ))}
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#F5F4FB",
-  },
-  header: {
-    backgroundColor: "#201B50",
-    paddingHorizontal: 22,
-    paddingTop: 18,
-    paddingBottom: 20,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: "#FFFFFF",
-    letterSpacing: 0.2,
-  },
-  headerSubtitle: {
-    fontSize: 13,
-    color: "#D2CFEA",
-    marginTop: 5,
-  },
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 16,
+    backgroundColor: "#F5F5F5",
   },
-  searchInput: {
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: "#EDEBF7",
-    borderWidth: 1,
-    borderColor: "#E2DFF1",
-    paddingHorizontal: 15,
-    fontSize: 15,
-    color: "#201B50",
-    marginBottom: 12,
+
+  header: {
+    backgroundColor: "#25205C",
+    padding: 20,
+    paddingTop: 25,
+    paddingBottom: 20,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    marginBottom: 15,
   },
-  list: {
-    flex: 1,
-  },
-  listContent: {
-    paddingTop: 1,
-    paddingBottom: 24,
-  },
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: "#E8E5F2",
-    padding: 11,
-    marginBottom: 10,
-    minHeight: 76,
-  },
-  photo: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "#E5E1F2",
-  },
-  studentInfo: {
-    flex: 1,
-    marginLeft: 11,
-    marginRight: 5,
-  },
-  studentName: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#292641",
-  },
-  studentYear: {
-    fontSize: 12,
-    color: "#85819F",
-    marginTop: 4,
-  },
-  flagButton: {
-    borderWidth: 1,
-    borderColor: "#A6A0C0",
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  flaggedButton: {
-    backgroundColor: "#D49300",
-    borderColor: "#D49300",
-  },
-  buttonPressed: {
-    opacity: 0.65,
-    transform: [{ scale: 0.96 }],
-  },
-  flagText: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: "#777194",
-  },
-  flaggedText: {
+
+  headerTitle: {
+    fontSize: 21,
+    fontWeight: "bold",
     color: "#FFFFFF",
   },
-  emptyContainer: {
+
+  headerSubtitle: {
+    fontSize: 12,
+    color: "#D8D5F0",
+    marginTop: 5,
+  },
+
+  list: {
     alignItems: "center",
-    paddingTop: 50,
-    paddingHorizontal: 20,
-  },
-  emptyTitle: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: "#292641",
-  },
-  emptySubtitle: {
-    fontSize: 13,
-    color: "#85819F",
-    marginTop: 6,
-    textAlign: "center",
+    paddingTop: 5,
+    paddingBottom: 25,
   },
 });
